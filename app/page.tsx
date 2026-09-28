@@ -1,83 +1,38 @@
 'use client';
-
 import { MouseEvent, useEffect, useState } from 'react';
 
-const accountOptions = ['개인 브랜딩·전문가 계정','강의·컨설팅·서비스 계정','매장·지역 기반 사업 계정','쇼핑몰·제품 판매 계정','회사·브랜드 계정','아직 계정을 준비 중이에요','기타'];
-const statusOptions = ['아직 시작 전이에요','시작했지만 운영 방향을 잡지 못했어요','직접 운영 중이지만 꾸준히 올리기 어려워요','꾸준히 올리지만 성과가 아쉬워요','전문가의 도움이나 대행을 알아보고 있어요'];
-const challengeOptions = ['어떤 주제로 글을 써야 할지 모르겠어요','내 브랜드에 맞는 문체와 방향을 잡기 어려워요','꾸준히 작성할 시간이나 인력이 부족해요','조회수와 팔로워가 잘 늘지 않아요','반응은 있지만 문의·상담으로 연결되지 않아요','스레드를 어떻게 활용해야 할지 전반적으로 모르겠어요'];
-const helpOptions = ['전자책을 보고 직접 운영해보고 싶어요','내 계정에 맞는 방향을 간단히 진단 받고 싶어요','콘텐츠 주제와 운영 전략을 함께 설계하고 싶어요','글 작성이나 운영의 일부를 맡기고 싶어요','스레드 운영 전체를 맡기는 대행 상담을 받고 싶어요','아직 잘 모르겠어요'];
-
-type SurveyAnswers = { threadsId:string; account:string[]; status:string[]; challenge:string[]; help:string[]; concern:string; consent:boolean };
-const initialSurvey: SurveyAnswers = { threadsId:'', account:[], status:[], challenge:[], help:[], concern:'', consent:false };
-
-const benefits = [
-  ['01','브랜드 인지도 상승','잠재 고객에게 브랜드의 가치와 전문성을 자연스럽게 알립니다.'],
-  ['02','진짜 고객과 소통','일방적인 홍보보다 고객이 반응하고 대화하는 콘텐츠를 만듭니다.'],
-  ['03','꾸준한 성장','한 번의 노출이 아니라 오래 이어지는 운영 흐름을 설계합니다.'],
-  ['04','비즈니스에 집중','기획과 운영의 부담을 줄여 본업에 집중할 시간을 만듭니다.'],
+const accountOptions=['개인 브랜딩·전문가 계정','강의·컨설팅·서비스 계정','매장·지역 기반 사업 계정','쇼핑몰·제품 판매 계정','회사·브랜드 계정','아직 계정을 준비 중이에요','기타'];
+const statusOptions=['아직 시작 전이에요','시작했지만 운영 방향을 잡지 못했어요','직접 운영 중이지만 꾸준히 올리기 어려워요','꾸준히 올리지만 성과가 아쉬워요','전문가의 도움이나 대행을 알아보고 있어요'];
+const challengeOptions=['어떤 주제로 글을 써야 할지 모르겠어요','내 브랜드에 맞는 문체와 방향을 잡기 어려워요','꾸준히 작성할 시간이나 인력이 부족해요','조회수와 팔로워가 잘 늘지 않아요','반응은 있지만 문의·상담으로 연결되지 않아요','스레드를 어떻게 활용해야 할지 전반적으로 모르겠어요'];
+const helpOptions=['전자책을 보고 직접 운영해보고 싶어요','내 계정에 맞는 방향을 간단히 진단 받고 싶어요','콘텐츠 주제와 운영 전략을 함께 설계하고 싶어요','글 작성이나 운영의 일부를 맡기고 싶어요','스레드 운영 전체를 맡기는 대행 상담을 받고 싶어요','아직 잘 모르겠어요'];
+type SurveyAnswers={threadsId:string;account:string[];status:string[];challenge:string[];help:string[];concern:string;consent:boolean};
+const initialSurvey:SurveyAnswers={threadsId:'',account:[],status:[],challenge:[],help:[],concern:'',consent:false};
+const audiences=[
+  ['병원·의원·한의원 원장님','https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=700&q=85'],
+  ['인테리어 대표님','https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=700&q=85'],
+  ['필라테스·헬스장 대표님','https://images.unsplash.com/photo-1594737625785-a6cbdabd333c?auto=format&fit=crop&w=700&q=85'],
+  ['온라인 스토어 운영하는 사업자','https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?auto=format&fit=crop&w=700&q=85'],
+  ['그 외, 더 많은 사업자분들','https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=700&q=85'],
 ];
-const cases = [
-  ['브랜드·전문가 계정','전문성이 어렵게 느껴지지 않도록 고객의 언어로 콘텐츠 주제와 문체를 정리합니다.'],
-  ['매장·서비스 사업','지역과 서비스의 강점을 발견해 방문과 상담으로 이어지는 이야기 흐름을 만듭니다.'],
-  ['온라인 쇼핑몰','제품 설명을 넘어 고객이 관심을 가져야 할 이유와 활용 장면을 콘텐츠로 연결합니다.'],
-];
-const faqs = [
-  ['어떤 업종이 스레드 마케팅에 잘 맞나요?','전문가, 서비스업, 매장, 온라인 쇼핑몰처럼 신뢰와 꾸준한 소통이 중요한 사업에 특히 잘 맞습니다.'],
-  ['콘텐츠를 전부 맡길 수도 있나요?','계정 진단과 방향 설계부터 주제 기획, 글 작성, 운영 대행까지 필요한 범위를 협의할 수 있습니다.'],
-  ['무료 전자책은 어떻게 받을 수 있나요?','간단한 신청폼을 작성하면 완료 화면에서 무료 전자책을 바로 확인할 수 있습니다.'],
-];
+const strengths=[['브랜드 인지도 상승','더 많은 잠재 고객에게 자연스럽게 노출됩니다.'],['진짜 고객과 소통','관심 있는 고객과 깊이 있는 대화가 가능합니다.'],['꾸준한 성장','지속 가능한 마케팅 채널로 사업이 성장합니다.'],['비즈니스에 집중','스레드 운영은 다이나 마케터가 함께합니다.']];
+const reasons=['진정성 있는 소통이 가능합니다.','잠재 고객에게 자연스럽게 노출됩니다.','브랜드의 전문성과 신뢰를 쌓을 수 있습니다.','지금 시작하면 더 큰 기회를 만들 수 있습니다.'];
 
-export default function Home() {
-  const [cursor,setCursor]=useState({x:-50,y:-50});
-  const [particles,setParticles]=useState<{id:number;x:number;y:number}[]>([]);
-  const [menuOpen,setMenuOpen]=useState(false);
-  const [surveyOpen,setSurveyOpen]=useState(false);
-  const [submitted,setSubmitted]=useState(false);
-  const [submitting,setSubmitting]=useState(false);
-  const [surveyError,setSurveyError]=useState('');
-  const [survey,setSurvey]=useState<SurveyAnswers>(initialSurvey);
-
-  useEffect(()=>{ const move=(e:globalThis.MouseEvent)=>setCursor({x:e.clientX,y:e.clientY}); window.addEventListener('mousemove',move); return()=>window.removeEventListener('mousemove',move)},[]);
+export default function Home(){
+  const [cursor,setCursor]=useState({x:-50,y:-50});const [particles,setParticles]=useState<{id:number;x:number;y:number}[]>([]);const [menuOpen,setMenuOpen]=useState(false);const [surveyOpen,setSurveyOpen]=useState(false);const [submitted,setSubmitted]=useState(false);const [submitting,setSubmitting]=useState(false);const [surveyError,setSurveyError]=useState('');const [survey,setSurvey]=useState<SurveyAnswers>(initialSurvey);
+  useEffect(()=>{const move=(e:globalThis.MouseEvent)=>setCursor({x:e.clientX,y:e.clientY});window.addEventListener('mousemove',move);return()=>window.removeEventListener('mousemove',move)},[]);
   const burst=(e:MouseEvent<HTMLElement>)=>{const next=Array.from({length:7},(_,i)=>({id:Date.now()+i,x:e.clientX,y:e.clientY}));setParticles(v=>[...v,...next]);setTimeout(()=>setParticles(v=>v.filter(p=>!next.some(n=>n.id===p.id))),700)};
-  const toggleChoice=(field:'account'|'status'|'challenge'|'help',value:string)=>setSurvey(current=>{const values=current[field];if(values.includes(value))return {...current,[field]:values.filter(item=>item!==value)};if(values.length>=2)return current;return {...current,[field]:[...values,value]}});
-  const closeSurvey=()=>{setSurveyOpen(false);setSurveyError('');if(submitted){setSubmitted(false);setSurvey(initialSurvey)}};
-  const openSurvey=()=>{setMenuOpen(false);setSurveyOpen(true)};
+  const toggleChoice=(field:'account'|'status'|'challenge'|'help',value:string)=>setSurvey(current=>{const values=current[field];if(values.includes(value))return{...current,[field]:values.filter(item=>item!==value)};if(values.length>=2)return current;return{...current,[field]:[...values,value]}});
+  const closeSurvey=()=>{setSurveyOpen(false);setSurveyError('');if(submitted){setSubmitted(false);setSurvey(initialSurvey)}};const openSurvey=()=>{setMenuOpen(false);setSurveyOpen(true)};
   const submitSurvey=async(e:React.FormEvent)=>{e.preventDefault();if(!survey.threadsId.trim()||!survey.account.length||!survey.status.length||!survey.challenge.length||!survey.help.length||!survey.consent){setSurveyError('필수 문항과 개인정보 수집·이용 동의를 확인해주세요.');return}setSurveyError('');setSubmitting(true);try{const body=new URLSearchParams();body.append('entry.1267348126',survey.threadsId.trim());survey.account.forEach(v=>body.append('entry.900249498',v));survey.status.forEach(v=>body.append('entry.1428476225',v));survey.challenge.forEach(v=>body.append('entry.2119475648',v));survey.help.forEach(v=>body.append('entry.908624512',v));body.append('entry.1131922935',survey.concern.trim());body.append('entry.2098307844','개인정보 수집 및 이용에 동의합니다.');body.append('fvv','1');body.append('pageHistory','0');await fetch('https://docs.google.com/forms/d/e/1FAIpQLSf83Rty4uNcxTWTUiHIi6YAbkNM7_7qGvoqKxmx92uT69yhLA/formResponse',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body});setSubmitted(true)}catch{setSurveyError('제출 중 문제가 생겼어요. 잠시 후 다시 시도해주세요.')}finally{setSubmitting(false)}};
-  const closeMenu=()=>setMenuOpen(false);
-
   return <main onClick={burst}>
-    <div className="custom-cursor" style={{transform:`translate(${cursor.x}px, ${cursor.y}px)`}}><span>똑</span></div>
-    {particles.map((p,i)=><i key={p.id} className="particle" style={{left:p.x,top:p.y,'--angle':`${i*51}deg`} as React.CSSProperties}/>)}
-
-    <header className="site-header">
-      <a className="brand" href="#home" onClick={closeMenu}><strong>가치똑똑</strong><span>MARKETER</span></a>
-      <button className="menu-toggle" type="button" aria-expanded={menuOpen} aria-label="메뉴 열기" onClick={()=>setMenuOpen(v=>!v)}><span/><span/></button>
-      <nav className={menuOpen?'open':''} aria-label="주요 메뉴">
-        <a href="#home" onClick={closeMenu}>홈</a><a href="#threads" onClick={closeMenu}>스레드 마케팅</a><a href="#cases" onClick={closeMenu}>성공 사례</a><button type="button" onClick={openSurvey}>무료 전자책</button><a href="#faq" onClick={closeMenu}>자주 묻는 질문</a><a href="#store" onClick={closeMenu}>온라인스토어</a>
-      </nav>
-      <button className="header-cta" type="button" onClick={openSurvey}>무료 전자책 받기 <span>→</span></button>
-    </header>
-
-    <section className="hero" id="home"><div className="hero-inner">
-      <div className="hero-copy"><p className="eyebrow">GOOD VALUE, SMART CONTENT</p><h1>좋은 가치를 발견해,<br/><em>선택받는 브랜드</em>로 만듭니다.</h1><p className="hero-description">약 12년의 홈쇼핑 채널 운영 경험을 바탕으로<br/>브랜드의 강점을 고객이 반응하는 콘텐츠와<br/>실제 선택으로 연결합니다.</p><div className="hero-actions"><button className="button dark" type="button" onClick={openSurvey}>스레드 무료 전자책 받기 <span>→</span></button><a className="button line" href="https://open.kakao.com/me/gachi_toktok" target="_blank" rel="noreferrer">상담 문의하기</a></div></div>
-      <div className="hero-visual" aria-label="가치똑똑 브랜드 메시지"><img src="/og.png" alt="가치똑똑, 좋은 가치를 똑똑하게 전해요"/><div className="visual-note"><span>VALUE</span><strong>콘텐츠에서<br/>선택까지.</strong></div></div>
-    </div></section>
-
-    <section className="benefit-strip" aria-label="가치똑똑의 강점">{benefits.map(([number,title,text])=><article key={number}><span>{number}</span><div><h2>{title}</h2><p>{text}</p></div></article>)}</section>
-
-    <section className="section threads" id="threads"><div className="section-heading"><p className="eyebrow">THREADS MARKETING</p><h2>스레드로,<br/>당신의 사업이 더 많은<br/>사람에게 닿도록</h2></div><div className="threads-body"><p>가치똑똑은 눈에 띄는 문구만 만들지 않습니다. 브랜드와 상품의 본질을 발견하고, 잠재 고객이 이해하고 신뢰할 수 있는 언어로 바꿉니다.</p><ol><li><span>01</span>브랜드의 목소리와 핵심 메시지 정리</li><li><span>02</span>고객이 반응하는 콘텐츠 주제 설계</li><li><span>03</span>꾸준한 운영을 위한 콘텐츠 흐름 구축</li><li><span>04</span>관심을 문의와 구매로 연결</li></ol><a className="text-link" href="https://blog.naver.com/twobinsliving/224342440500" target="_blank" rel="noreferrer">스레드 마케팅 대행 자세히 보기 <span>→</span></a></div></section>
-
-    <section className="section cases" id="cases"><div className="section-heading wide"><p className="eyebrow">SELECTED APPROACH</p><h2>사업에 맞는 언어와<br/>운영 방향을 함께 찾습니다</h2><p>업종은 달라도 고객이 선택하는 과정에는 이유가 있습니다.</p></div><div className="case-grid">{cases.map(([title,text],i)=><article key={title}><span>0{i+1}</span><h3>{title}</h3><p>{text}</p></article>)}</div></section>
-
-    <section className="ebook-band"><div><p className="eyebrow">FREE E-BOOK</p><h2>스레드 운영이 막막하다면,<br/>무료 전자책부터 시작해보세요.</h2></div><button className="button light" type="button" onClick={openSurvey}>무료 전자책 받기 <span>→</span></button></section>
-
-    <section className="section faq" id="faq"><div className="section-heading"><p className="eyebrow">FAQ</p><h2>자주 묻는 질문</h2></div><div className="faq-list">{faqs.map(([q,a],i)=><details key={q} open={i===0}><summary><span>0{i+1}</span>{q}<b>＋</b></summary><p>{a}</p></details>)}</div></section>
-
-    <section className="section store" id="store"><div className="section-heading wide"><p className="eyebrow">ONLINE STORE</p><h2>가치똑똑이 운영하는<br/>온라인 스토어</h2><p>직접 운영하며 확인한 고객의 선택과 온라인 판매의 흐름을 경험합니다.</p></div><div className="store-links"><a href="https://smartstore.naver.com/dynaliving" target="_blank" rel="noreferrer"><small>NAVER</small><strong>스마트스토어</strong><span>↗</span></a><a href="https://shop.coupang.com/dynaliving?platform=p" target="_blank" rel="noreferrer"><small>COUPANG</small><strong>쿠팡 마이샵</strong><span>↗</span></a><a href="https://litt.ly/gachi_toktok" target="_blank" rel="noreferrer"><small>LITT.LY</small><strong>추천 아이템 전체보기</strong><span>↗</span></a></div></section>
-
-    <section className="closing"><p className="eyebrow">LET&apos;S GROW TOGETHER</p><h2>좋은 가치가 더 멀리 닿도록,<br/>가치똑똑이 함께합니다.</h2><div><button className="button light" type="button" onClick={openSurvey}>무료 전자책 받기 <span>→</span></button><a className="button ghost" href="https://open.kakao.com/me/gachi_toktok" target="_blank" rel="noreferrer">상담 문의하기</a></div></section>
-    <footer><a className="brand" href="#home"><strong>가치똑똑</strong><span>MARKETER</span></a><p>다이나 콘텐츠 마케팅 회사</p><small>© VALUE SMART. ALL RIGHTS RESERVED.</small></footer>
-
+    <div className="custom-cursor" style={{transform:`translate(${cursor.x}px,${cursor.y}px)`}}><span>DYNA</span></div>{particles.map((p,i)=><i key={p.id} className="particle" style={{left:p.x,top:p.y,'--angle':`${i*51}deg`} as React.CSSProperties}/>)}
+    <header className="site-header"><a className="brand" href="#home">다이나 마케터</a><button className="menu-toggle" type="button" aria-label="메뉴 열기" aria-expanded={menuOpen} onClick={()=>setMenuOpen(v=>!v)}><span/><span/></button><nav className={menuOpen?'open':''}><a href="#home" onClick={()=>setMenuOpen(false)}>홈</a><a href="#threads" onClick={()=>setMenuOpen(false)}>스레드 마케팅</a><a href="#audience" onClick={()=>setMenuOpen(false)}>성공 사례</a><button type="button" onClick={openSurvey}>무료 전자책</button><a href="#why" onClick={()=>setMenuOpen(false)}>자주 묻는 질문</a></nav><button className="nav-cta" type="button" onClick={openSurvey}>무료 전자책 받기 <span>→</span></button></header>
+    <section className="hero" id="home"><div className="hero-copy"><p className="eyebrow">BRAND GROWS ON THREADS</p><h1>스레드로,<br/>당신의 사업이 더 많은<br/>사람에게 닿도록</h1><p>다이나 마케터는 스레드를 통해<br/>사업의 가치를 알리고, 잠재 고객과 연결되는<br/>실질적인 성과를 만듭니다.</p><div className="actions"><button className="btn dark" type="button" onClick={openSurvey}>스레드 무료 전자책 받기 <span>→</span></button><a className="btn outline" href="https://open.kakao.com/me/gachi_toktok" target="_blank" rel="noreferrer">상담 문의하기</a></div></div><div className="hero-image"><img src="/dyna-hero.png" alt="스레드 콘텐츠가 보이는 스마트폰과 따뜻한 공간"/><p>작은 글이<br/>큰 기회가 되는 곳<br/><em>Threads</em></p></div></section>
+    <section className="strengths" id="threads">{strengths.map(([title,text],i)=><article key={title}><div className="icon">{['♙','◌','▥','◎'][i]}</div><div><h2>{title}</h2><p>{text}</p></div></article>)}</section>
+    <section className="audience" id="audience"><div className="section-head"><p className="eyebrow">FOR BUSINESS OWNERS</p><h2>이런 분들께 추천합니다</h2><p>스레드로 더 많은 사람들에게 당신의 이야기를 알려보세요.</p></div><div className="audience-grid">{audiences.map(([title,image])=><article key={title}><img src={image} alt=""/><p>{title}</p></article>)}</div></section>
+    <section className="why" id="why"><div className="why-intro"><p className="eyebrow">WHY THREADS</p><h2>스레드가 마케팅에<br/>중요한 이유</h2><p>스레드는 지금 가장 빠르게 성장하는 소셜 플랫폼 중 하나입니다. 가볍지만 진정성 있는 소통이 가능해, 브랜드의 이야기를 자연스럽게 전달하고 신뢰를 쌓을 수 있습니다.</p><a className="btn dark" href="https://blog.naver.com/twobinsliving/224342440500" target="_blank" rel="noreferrer">스레드로 사업 알리는 방법 보기 <span>→</span></a></div><ol>{reasons.map((reason,i)=><li key={reason}><span>0{i+1}</span>{reason}</li>)}</ol><aside><p className="eyebrow">FREE E-BOOK</p><h3>스레드 무료 전자책</h3><p>처음 시작하는 분도 쉽게 따라할 수 있는 실전 가이드를 무료로 제공합니다.</p><button className="mini-cta" type="button" onClick={openSurvey}>무료 전자책 받기 →</button><div className="book"><strong>스레드로<br/>사업을 키우는<br/>실전 가이드</strong><small>다이나 마케터</small><b>＠</b></div></aside></section>
+    <section className="closing"><div><p className="eyebrow">LET&apos;S GROW TOGETHER</p><h2>지금, 스레드로 당신의 사업을 더 멀리</h2><p>다이나 마케터가 함께합니다.</p></div><div className="actions"><button className="btn light" type="button" onClick={openSurvey}>스레드 무료 전자책 받기 <span>→</span></button><a className="btn glass" href="https://open.kakao.com/me/gachi_toktok" target="_blank" rel="noreferrer">상담 문의하기</a></div></section>
+    <footer><strong>다이나 마케터</strong><small>© DYNA MARKETER. ALL RIGHTS RESERVED.</small></footer>
     {surveyOpen&&<SurveyModal submitted={submitted} submitting={submitting} surveyError={surveyError} survey={survey} setSurvey={setSurvey} closeSurvey={closeSurvey} toggleChoice={toggleChoice} submitSurvey={submitSurvey}/>}
   </main>;
 }
