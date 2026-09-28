@@ -8,7 +8,7 @@ const helpOptions=['전자책을 보고 직접 운영해보고 싶어요','내 �
 type SurveyAnswers={threadsId:string;account:string[];status:string[];challenge:string[];help:string[];concern:string;consent:boolean};
 const initialSurvey:SurveyAnswers={threadsId:'',account:[],status:[],challenge:[],help:[],concern:'',consent:false};
 const audiences=[
-  ['병원·의원·한의원 원장님','https://images.unsplash.com/photo-1584467735867-4297ae2ebcee?auto=format&fit=crop&w=900&q=88'],
+  ['병원·의원·한의원 원장님','/doctor-upper-body.png'],
   ['인테리어 대표님','https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=700&q=85'],
   ['필라테스·헬스장 대표님','https://static.wixstatic.com/media/f63b8b_93bbf3c2999744bab2ac3b29809efbb5~mv2.jpg/v1/fill/w_900,h_620,al_c,q_85/Bianca%20Profile.jpg'],
   ['온라인 스토어 운영하는 사업자','/online-store-workspace.png'],
