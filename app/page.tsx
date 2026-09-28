@@ -8,11 +8,11 @@ const helpOptions=['전자책을 보고 직접 운영해보고 싶어요','내 �
 type SurveyAnswers={threadsId:string;account:string[];status:string[];challenge:string[];help:string[];concern:string;consent:boolean};
 const initialSurvey:SurveyAnswers={threadsId:'',account:[],status:[],challenge:[],help:[],concern:'',consent:false};
 const audiences=[
-  ['병원·의원·한의원 원장님','https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=700&q=85'],
+  ['병원·의원·한의원 원장님','https://images.unsplash.com/photo-1584467735867-4297ae2ebcee?auto=format&fit=crop&w=900&q=88'],
   ['인테리어 대표님','https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=700&q=85'],
-  ['필라테스·헬스장 대표님','https://images.unsplash.com/photo-1594737625785-a6cbdabd333c?auto=format&fit=crop&w=700&q=85'],
-  ['온라인 스토어 운영하는 사업자','https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?auto=format&fit=crop&w=700&q=85'],
-  ['그 외, 더 많은 사업자분들','https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=700&q=85'],
+  ['필라테스·헬스장 대표님','https://static.wixstatic.com/media/f63b8b_93bbf3c2999744bab2ac3b29809efbb5~mv2.jpg/v1/fill/w_900,h_620,al_c,q_85/Bianca%20Profile.jpg'],
+  ['온라인 스토어 운영하는 사업자','https://acquireconvert-cms.vercel.app/api/media/file/best-ai-photo-editing-apps-workspace-for-ecommerce-product-sellers-editing-produ.jpg'],
+  ['오프라인 카페, 음식점 사장님','https://images.squarespace-cdn.com/content/v1/5c885781b10f25869366c107/1562738522832-PZJ79Y73TB22DRPUQ269/biasol-sisterhood-hobart-hero.jpg'],
 ];
 const strengths=[['브랜드 인지도 상승','더 많은 잠재 고객에게 자연스럽게 노출됩니다.'],['진짜 고객과 소통','관심 있는 고객과 깊이 있는 대화가 가능합니다.'],['꾸준한 성장','지속 가능한 마케팅 채널로 사업이 성장합니다.'],['비즈니스에 집중','스레드 운영은 다이나 마케터가 함께합니다.']];
 const reasons=['진정성 있는 소통이 가능합니다.','잠재 고객에게 자연스럽게 노출됩니다.','브랜드의 전문성과 신뢰를 쌓을 수 있습니다.','지금 시작하면 더 큰 기회를 만들 수 있습니다.'];
