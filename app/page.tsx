@@ -11,7 +11,7 @@ const audiences=[
   ['병원·의원·한의원 원장님','https://images.unsplash.com/photo-1584467735867-4297ae2ebcee?auto=format&fit=crop&w=900&q=88'],
   ['인테리어 대표님','https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=700&q=85'],
   ['필라테스·헬스장 대표님','https://static.wixstatic.com/media/f63b8b_93bbf3c2999744bab2ac3b29809efbb5~mv2.jpg/v1/fill/w_900,h_620,al_c,q_85/Bianca%20Profile.jpg'],
-  ['온라인 스토어 운영하는 사업자','https://acquireconvert-cms.vercel.app/api/media/file/best-ai-photo-editing-apps-workspace-for-ecommerce-product-sellers-editing-produ.jpg'],
+  ['온라인 스토어 운영하는 사업자','/online-store-workspace.png'],
   ['오프라인 카페, 음식점 사장님','https://images.squarespace-cdn.com/content/v1/5c885781b10f25869366c107/1562738522832-PZJ79Y73TB22DRPUQ269/biasol-sisterhood-hobart-hero.jpg'],
 ];
 const strengths=[['브랜드 인지도 상승','더 많은 잠재 고객에게 자연스럽게 노출됩니다.'],['진짜 고객과 소통','관심 있는 고객과 깊이 있는 대화가 가능합니다.'],['꾸준한 성장','지속 가능한 마케팅 채널로 사업이 성장합니다.'],['비즈니스에 집중','스레드 운영은 다이나 마케터가 함께합니다.']];
